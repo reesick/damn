@@ -1,14 +1,12 @@
-/*
-Experiment 03: Depth (Height) of Binary Tree
-Topic: Trees
-Concepts Used:
-- Recursion
-- Tree Height Calculation
-- Binary Tree
-*/
-
 #include <iostream>
 using namespace std;
+
+/*
+Experiment 03: Height of Binary Tree
+Concepts:
+- Binary Tree
+- Recursion
+*/
 
 struct Node {
     int data;
@@ -16,38 +14,44 @@ struct Node {
     Node* right;
 };
 
-Node* newNode(int val) {
-    Node* n = new Node();
-    n->data = val;
-    n->left = n->right = NULL;
-    return n;
-}
+int height(Node* root) {
 
-// depth = 1 + max(left depth, right depth)
-int depth(Node* root) {
-    // base case: empty tree ki depth 0
-    if (root == NULL) return 0;
+    // agar node nahi hai toh height 0
+    if (root == NULL)
+        return 0;
 
-    int leftDepth  = depth(root->left);
-    int rightDepth = depth(root->right);
+    // left subtree ki height
+    int leftHeight = height(root->left);
 
-    // jo bhi zyada ho woh le lo
-    return 1 + max(leftDepth, rightDepth);
+    // right subtree ki height
+    int rightHeight = height(root->right);
+
+    // bada wala lo + current node
+    if (leftHeight > rightHeight)
+        return leftHeight + 1;
+    else
+        return rightHeight + 1;
 }
 
 int main() {
-    //        1
-    //       / \
-    //      2   3
-    //     / \
-    //    4   5
-    Node* root = newNode(1);
-    root->left = newNode(2);
-    root->right = newNode(3);
-    root->left->left = newNode(4);
-    root->left->right = newNode(5);
 
-    cout << "Depth of tree: " << depth(root) << endl;
+    /*
+            10
+           /  \
+          5    20
+         / \
+        2   8
+    */
+
+    Node* root = new Node{10, NULL, NULL};
+
+    root->left = new Node{5, NULL, NULL};
+    root->right = new Node{20, NULL, NULL};
+
+    root->left->left = new Node{2, NULL, NULL};
+    root->left->right = new Node{8, NULL, NULL};
+
+    cout << "Height of tree: " << height(root);
 
     return 0;
 }
