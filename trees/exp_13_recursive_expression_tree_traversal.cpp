@@ -1,82 +1,93 @@
-/*
-Experiment 13: Recursive Expression Tree Traversal
-Topic: Trees
-Concepts Used:
-- Expression Tree
-- Recursive Inorder, Preorder, Postorder
-- Prefix, Infix, Postfix expressions
-*/
-
 #include <iostream>
-#include <stack>
-#include <string>
 using namespace std;
 
+/*
+Experiment 11: Height Balanced BST
+Concepts:
+- BST
+- Height
+- Recursion
+*/
+
 struct Node {
-    char data;
+    int data;
     Node* left;
     Node* right;
 };
 
-Node* newNode(char val) {
-    Node* n = new Node();
-    n->data = val;
-    n->left = n->right = NULL;
-    return n;
+Node* insert(Node* root, int value) {
+
+    // empty jagah pe node banao
+    if (root == NULL)
+        return new Node{value, NULL, NULL};
+
+    // chota left me
+    if (value < root->data)
+        root->left = insert(root->left, value);
+
+    // bada right me
+    else
+        root->right = insert(root->right, value);
+
+    return root;
 }
 
-bool isOperator(char c) {
-    return (c == '+' || c == '-' || c == '*' || c == '/');
+
+// height nikalne ka same old logic
+int height(Node* root) {
+
+    // node nahi hai
+    if (root == NULL)
+        return 0;
+
+    int leftHeight = height(root->left);
+    int rightHeight = height(root->right);
+
+    if (leftHeight > rightHeight)
+        return leftHeight + 1;
+    else
+        return rightHeight + 1;
 }
 
-Node* buildExprTree(string postfix) {
-    stack<Node*> st;
-    for (char c : postfix) {
-        Node* n = newNode(c);
-        if (isOperator(c)) {
-            n->right = st.top(); st.pop();
-            n->left  = st.top(); st.pop();
-        }
-        st.push(n);
-    }
-    return st.top();
-}
 
-// inorder = infix expression
-void inorder(Node* root) {
-    if (root == NULL) return;
-    if (isOperator(root->data)) cout << "(";
-    inorder(root->left);
-    cout << root->data;
-    inorder(root->right);
-    if (isOperator(root->data)) cout << ")";
-}
+// balance check
+bool isBalanced(Node* root) {
 
-// preorder = prefix expression
-void preorder(Node* root) {
-    if (root == NULL) return;
-    cout << root->data;
-    preorder(root->left);
-    preorder(root->right);
-}
+    // empty tree balanced hota hai
+    if (root == NULL)
+        return true;
 
-// postorder = postfix expression
-void postorder(Node* root) {
-    if (root == NULL) return;
-    postorder(root->left);
-    postorder(root->right);
-    cout << root->data;
+    int leftHeight = height(root->left);
+    int rightHeight = height(root->right);
+
+    int diff = leftHeight - rightHeight;
+
+    // absolute difference manually
+    if (diff < 0)
+        diff = -diff;
+
+    // agar difference 1 se bada hai toh fail
+    if (diff > 1)
+        return false;
+
+    // left aur right subtree bhi balanced hone chahiye
+    return isBalanced(root->left) && isBalanced(root->right);
 }
 
 int main() {
-    string postfix = "ab+cd-*";
-    cout << "Postfix input: " << postfix << endl;
 
-    Node* root = buildExprTree(postfix);
+    Node* root = NULL;
 
-    cout << "Infix  (Inorder):   "; inorder(root);   cout << endl;
-    cout << "Prefix (Preorder):  "; preorder(root);  cout << endl;
-    cout << "Postfix (Postorder):"; postorder(root); cout << endl;
+    root = insert(root, 10);
+    root = insert(root, 5);
+    root = insert(root, 20);
+    root = insert(root, 2);
+    root = insert(root, 8);
+
+    if (isBalanced(root))
+        cout << "Tree is balanced";
+    else
+        cout << "Tree is not balanced";
 
     return 0;
 }

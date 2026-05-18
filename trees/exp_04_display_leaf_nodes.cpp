@@ -1,14 +1,12 @@
-/*
-Experiment 04: Display Leaf Nodes of Binary Tree
-Topic: Trees
-Concepts Used:
-- Recursion
-- Leaf Node Condition
-- Binary Tree
-*/
-
 #include <iostream>
 using namespace std;
+
+/*
+Experiment 04: Display Leaf Nodes
+Concepts:
+- Binary Tree
+- Recursion
+*/
 
 struct Node {
     int data;
@@ -16,44 +14,45 @@ struct Node {
     Node* right;
 };
 
-Node* newNode(int val) {
-    Node* n = new Node();
-    n->data = val;
-    n->left = n->right = NULL;
-    return n;
-}
+void displayLeaf(Node* root) {
 
-// leaf node = jiske dono children NULL hain
-void printLeaves(Node* root) {
-    if (root == NULL) return;
+    // agar node nahi hai toh stop
+    if (root == NULL)
+        return;
 
-    // agar dono children NULL hain toh yeh leaf hai
+    // agar dono children nahi hai toh leaf node
     if (root->left == NULL && root->right == NULL) {
         cout << root->data << " ";
         return;
     }
 
-    // warna left aur right me dhundho
-    printLeaves(root->left);
-    printLeaves(root->right);
+    // left subtree check karo
+    displayLeaf(root->left);
+
+    // right subtree check karo
+    displayLeaf(root->right);
 }
 
 int main() {
-    //        1
-    //       / \
-    //      2   3
-    //     / \   \
-    //    4   5   6
-    Node* root = newNode(1);
-    root->left = newNode(2);
-    root->right = newNode(3);
-    root->left->left = newNode(4);
-    root->left->right = newNode(5);
-    root->right->right = newNode(6);
+
+    /*
+            10
+           /  \
+          5    20
+         / \
+        2   8
+    */
+
+    Node* root = new Node{10, NULL, NULL};
+
+    root->left = new Node{5, NULL, NULL};
+    root->right = new Node{20, NULL, NULL};
+
+    root->left->left = new Node{2, NULL, NULL};
+    root->left->right = new Node{8, NULL, NULL};
 
     cout << "Leaf nodes: ";
-    printLeaves(root);
-    cout << endl;
+    displayLeaf(root);
 
     return 0;
 }

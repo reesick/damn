@@ -1,16 +1,14 @@
-/*
-Experiment 12: Expression Tree Construction
-Topic: Trees
-Concepts Used:
-- Expression Tree
-- Stack-based Construction
-- Postfix Expression
-*/
-
 #include <iostream>
 #include <stack>
-#include <string>
 using namespace std;
+
+/*
+Experiment 12: Expression Tree Construction
+Concepts:
+- Stack
+- Expression Tree
+- Postfix
+*/
 
 struct Node {
     char data;
@@ -18,56 +16,91 @@ struct Node {
     Node* right;
 };
 
-Node* newNode(char val) {
-    Node* n = new Node();
-    n->data = val;
-    n->left = n->right = NULL;
-    return n;
+
+// helper node creation
+Node* createNode(char value) {
+
+    // naya node banao
+    Node* newNode = new Node;
+
+    newNode->data = value;
+    newNode->left = NULL;
+    newNode->right = NULL;
+
+    return newNode;
 }
 
-// check karo operator hai ya operand
-bool isOperator(char c) {
-    return (c == '+' || c == '-' || c == '*' || c == '/');
+
+// operator check
+bool isOperator(char ch) {
+
+    return (ch == '+' || ch == '-' || ch == '*' || ch == '/');
 }
 
-// postfix expression se expression tree banate hai
-Node* buildExprTree(string postfix) {
+
+// tree build from postfix
+Node* buildTree(string postfix) {
+
+    // stack node addresses store karega
     stack<Node*> st;
 
-    for (char c : postfix) {
-        Node* n = newNode(c);
+    for (char ch : postfix) {
 
-        if (isOperator(c)) {
-            // operator ke liye 2 operands stack se nikalo
-            n->right = st.top(); st.pop(); // pehle right
-            n->left  = st.top(); st.pop(); // phir left
+        // agar operand hai
+        if (!isOperator(ch)) {
+
+            // simple node banao aur push
+            st.push(createNode(ch));
         }
-        // node stack me push karo
-        st.push(n);
+
+        else {
+
+            // operator mila
+
+            // first pop = right child
+            Node* right = st.top();
+            st.pop();
+
+            // second pop = left child
+            Node* left = st.top();
+            st.pop();
+
+            // operator node banao
+            Node* opNode = createNode(ch);
+
+            // children connect karo
+            opNode->left = left;
+            opNode->right = right;
+
+            // new mini tree stack me push
+            st.push(opNode);
+        }
     }
 
-    // stack ka top hi root hoga
+    // final tree root
     return st.top();
 }
 
-// inorder traversal = infix expression
+
+// inorder just for verification
 void inorder(Node* root) {
-    if (root == NULL) return;
-    if (root->left)  { cout << "("; inorder(root->left); }
-    cout << root->data;
-    if (root->right) { inorder(root->right); cout << ")"; }
+
+    if (root == NULL)
+        return;
+
+    inorder(root->left);
+    cout << root->data << " ";
+    inorder(root->right);
 }
 
 int main() {
-    // postfix: ab+cd-*  means (a+b)*(c-d)
-    string postfix = "ab+cd-*";
-    cout << "Postfix: " << postfix << endl;
 
-    Node* root = buildExprTree(postfix);
+    string postfix = "AB+C*";
 
-    cout << "Infix (Expression Tree Inorder): ";
+    Node* root = buildTree(postfix);
+
+    cout << "Inorder Expression: ";
     inorder(root);
-    cout << endl;
 
     return 0;
 }

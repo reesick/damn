@@ -1,15 +1,14 @@
-/*
-Experiment 10: Iterative BST Traversals
-Topic: Trees
-Concepts Used:
-- Binary Search Tree
-- Stack-based Iterative Traversal
-- Inorder, Preorder (Iterative)
-*/
-
 #include <iostream>
 #include <stack>
 using namespace std;
+
+/*
+Experiment 10: Iterative BST Traversal
+Concepts:
+- BST
+- Stack
+- Iterative Inorder
+*/
 
 struct Node {
     int data;
@@ -17,64 +16,56 @@ struct Node {
     Node* right;
 };
 
-Node* newNode(int val) {
-    Node* n = new Node();
-    n->data = val;
-    n->left = n->right = NULL;
-    return n;
-}
+Node* insert(Node* root, int value) {
 
-Node* insert(Node* root, int val) {
-    if (root == NULL) return newNode(val);
-    if (val < root->data) root->left  = insert(root->left,  val);
-    else if (val > root->data) root->right = insert(root->right, val);
+    if (root == NULL)
+        return new Node{value, NULL, NULL};
+
+    if (value < root->data)
+        root->left = insert(root->left, value);
+    else
+        root->right = insert(root->right, value);
+
     return root;
 }
 
-// iterative inorder: stack use karke left me jao, print karo, right pe jao
-void iterativeInorder(Node* root) {
-    stack<Node*> st;
-    Node* curr = root;
+void inorder(Node* root) {
 
-    while (curr != NULL || !st.empty()) {
-        // left me jaate jao aur stack me push karo
-        while (curr != NULL) {
-            st.push(curr);
-            curr = curr->left;
+    stack<Node*> st;
+    Node* current = root;
+
+    while (current != NULL || !st.empty()) {
+
+        // left side push karte jao
+        while (current != NULL) {
+            st.push(current);
+            current = current->left;
         }
-        // ab backtrack karo
-        curr = st.top(); st.pop();
-        cout << curr->data << " ";
-        // ab right subtree dekho
-        curr = curr->right;
+
+        // top nikalo
+        current = st.top();
+        st.pop();
+
+        // print
+        cout << current->data << " ";
+
+        // right side
+        current = current->right;
     }
-    cout << endl;
-}
-
-// iterative preorder: root print karo, phir right then left push karo
-void iterativePreorder(Node* root) {
-    if (root == NULL) return;
-    stack<Node*> st;
-    st.push(root);
-
-    while (!st.empty()) {
-        Node* curr = st.top(); st.pop();
-        cout << curr->data << " ";
-
-        // right pehle push karo taaki left pehle process ho
-        if (curr->right) st.push(curr->right);
-        if (curr->left)  st.push(curr->left);
-    }
-    cout << endl;
 }
 
 int main() {
-    Node* root = NULL;
-    int arr[] = {50, 30, 70, 20, 40, 60, 80};
-    for (int x : arr) root = insert(root, x);
 
-    cout << "Iterative Inorder:  "; iterativeInorder(root);
-    cout << "Iterative Preorder: "; iterativePreorder(root);
+    Node* root = NULL;
+
+    root = insert(root, 10);
+    root = insert(root, 5);
+    root = insert(root, 20);
+    root = insert(root, 2);
+    root = insert(root, 8);
+
+    cout << "Iterative Inorder: ";
+    inorder(root);
 
     return 0;
 }

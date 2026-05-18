@@ -1,15 +1,14 @@
-/*
-Experiment 08: BST Level Wise Traversal (BFS)
-Topic: Trees
-Concepts Used:
-- Binary Search Tree
-- Level Order Traversal
-- Queue
-*/
-
 #include <iostream>
 #include <queue>
 using namespace std;
+
+/*
+Experiment 08: BST Level Wise Traversal
+Concepts:
+- BST
+- Queue
+- BFS
+*/
 
 struct Node {
     int data;
@@ -17,49 +16,68 @@ struct Node {
     Node* right;
 };
 
-Node* newNode(int val) {
-    Node* n = new Node();
-    n->data = val;
-    n->left = n->right = NULL;
-    return n;
-}
+Node* insert(Node* root, int value) {
 
-Node* insert(Node* root, int val) {
-    if (root == NULL) return newNode(val);
-    if (val < root->data) root->left  = insert(root->left,  val);
-    else if (val > root->data) root->right = insert(root->right, val);
+    if (root == NULL){       
+        return new Node {value,NULL, NULL};
+    }
+
+    if (value< root->data){
+        root->left = insert(root->left,value);
+    }
+
+    else{
+        root->right = insert(root->right,value);
+    }
+    
     return root;
+    
 }
 
-// level by level print karo using queue
 void levelOrder(Node* root) {
-    if (root == NULL) return;
 
+    // tree empty
+    if (root == NULL)
+        return;
+
+    // queue node addresses store karega
     queue<Node*> q;
+
+    // root se start
     q.push(root);
 
     while (!q.empty()) {
-        // current level ke kitne nodes hain
-        int levelSize = q.size();
 
-        for (int i = 0; i < levelSize; i++) {
-            Node* curr = q.front(); q.pop();
-            cout << curr->data << " ";
+        // front node nikalo
+        Node* temp = q.front();
+        q.pop();
 
-            // children queue me daalo
-            if (curr->left)  q.push(curr->left);
-            if (curr->right) q.push(curr->right);
-        }
-        cout << endl; // nayi level pe nayi line
+        // print current node
+        cout << temp->data << " ";
+
+        // left child hai toh queue me dalo
+        if (temp->left != NULL)
+            q.push(temp->left);
+
+        // right child hai toh queue me dalo
+        if (temp->right != NULL)
+            q.push(temp->right);
     }
 }
 
 int main() {
-    Node* root = NULL;
-    int arr[] = {50, 30, 70, 20, 40, 60, 80};
-    for (int x : arr) root = insert(root, x);
 
-    cout << "Level wise traversal:" << endl;
+    Node* root = NULL;
+
+    root = insert(root, 10);
+    root = insert(root, 5);
+    root = insert(root, 20);
+    root = insert(root, 2);
+    root = insert(root, 8);
+
+    cout <<&root;
+
+    cout << "Level Order Traversal: ";
     levelOrder(root);
 
     return 0;

@@ -1,13 +1,13 @@
-/*
-Experiment 09: Recursive BST Traversals
-Topic: Trees
-Concepts Used:
-- Binary Search Tree
-- Inorder, Preorder, Postorder (Recursive)
-*/
-
 #include <iostream>
 using namespace std;
+
+/*
+Experiment 09: Recursive BST Traversals
+Concepts:
+- BST
+- Recursion
+- Tree Traversals
+*/
 
 struct Node {
     int data;
@@ -15,52 +15,77 @@ struct Node {
     Node* right;
 };
 
-Node* newNode(int val) {
-    Node* n = new Node();
-    n->data = val;
-    n->left = n->right = NULL;
-    return n;
-}
+Node* insert(Node* root, int value) {
 
-Node* insert(Node* root, int val) {
-    if (root == NULL) return newNode(val);
-    if (val < root->data) root->left  = insert(root->left,  val);
-    else if (val > root->data) root->right = insert(root->right, val);
+    // empty jagah pe node banao
+    if (root == NULL)
+        return new Node{value, NULL, NULL};
+
+    // chota left me
+    if (value < root->data)
+        root->left = insert(root->left, value);
+
+    // bada right me
+    else
+        root->right = insert(root->right, value);
+
     return root;
 }
 
-// Left -> Root -> Right (sorted order deta hai BST me)
+
+// LEFT ROOT RIGHT
 void inorder(Node* root) {
-    if (root == NULL) return;
+
+    if (root == NULL)
+        return;
+
     inorder(root->left);
     cout << root->data << " ";
     inorder(root->right);
 }
 
-// Root -> Left -> Right
+
+// ROOT LEFT RIGHT
 void preorder(Node* root) {
-    if (root == NULL) return;
+
+    if (root == NULL)
+        return;
+
     cout << root->data << " ";
     preorder(root->left);
     preorder(root->right);
 }
 
-// Left -> Right -> Root
+
+// LEFT RIGHT ROOT
 void postorder(Node* root) {
-    if (root == NULL) return;
+
+    if (root == NULL)
+        return;
+
     postorder(root->left);
     postorder(root->right);
     cout << root->data << " ";
 }
 
 int main() {
-    Node* root = NULL;
-    int arr[] = {50, 30, 70, 20, 40, 60, 80};
-    for (int x : arr) root = insert(root, x);
 
-    cout << "Inorder   (L-Root-R): "; inorder(root);   cout << endl;
-    cout << "Preorder  (Root-L-R): "; preorder(root);  cout << endl;
-    cout << "Postorder (L-R-Root): "; postorder(root); cout << endl;
+    Node* root = NULL;
+
+    root = insert(root, 10);
+    root = insert(root, 5);
+    root = insert(root, 20);
+    root = insert(root, 2);
+    root = insert(root, 8);
+
+    cout << "Inorder: ";
+    inorder(root);
+
+    cout << "\nPreorder: ";
+    preorder(root);
+
+    cout << "\nPostorder: ";
+    postorder(root);
 
     return 0;
 }

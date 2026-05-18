@@ -1,17 +1,14 @@
-/*
-Experiment 14: Non-Recursive Expression Tree Traversal
-Topic: Trees
-Concepts Used:
-- Expression Tree
-- Stack-based Iterative Traversal
-- Postfix, Prefix using stack
-*/
-
 #include <iostream>
 #include <stack>
-#include <string>
-#include <vector>
 using namespace std;
+
+/*
+Experiment 14: Non Recursive Expression Tree Traversal
+Concepts:
+- Stack
+- Expression Tree
+- Iterative Inorder
+*/
 
 struct Node {
     char data;
@@ -19,92 +16,62 @@ struct Node {
     Node* right;
 };
 
-Node* newNode(char val) {
-    Node* n = new Node();
-    n->data = val;
-    n->left = n->right = NULL;
-    return n;
+Node* createNode(char value) {
+
+    Node* newNode = new Node;
+
+    newNode->data = value;
+    newNode->left = NULL;
+    newNode->right = NULL;
+
+    return newNode;
 }
 
-bool isOperator(char c) {
-    return (c == '+' || c == '-' || c == '*' || c == '/');
-}
+void inorder(Node* root) {
 
-Node* buildExprTree(string postfix) {
     stack<Node*> st;
-    for (char c : postfix) {
-        Node* n = newNode(c);
-        if (isOperator(c)) {
-            n->right = st.top(); st.pop();
-            n->left  = st.top(); st.pop();
+    Node* current = root;
+
+    while (current != NULL || !st.empty()) {
+
+        // left side push karte jao
+        while (current != NULL) {
+            st.push(current);
+            current = current->left;
         }
-        st.push(n);
+
+        // top node nikalo
+        current = st.top();
+        st.pop();
+
+        // print
+        cout << current->data << " ";
+
+        // right subtree
+        current = current->right;
     }
-    return st.top();
-}
-
-// iterative inorder using stack
-void iterativeInorder(Node* root) {
-    stack<Node*> st;
-    Node* curr = root;
-
-    while (curr != NULL || !st.empty()) {
-        while (curr != NULL) {
-            st.push(curr);
-            curr = curr->left;
-        }
-        curr = st.top(); st.pop();
-        cout << curr->data;
-        curr = curr->right;
-    }
-    cout << endl;
-}
-
-// iterative postorder: do-reverse trick using 2 stacks
-void iterativePostorder(Node* root) {
-    if (root == NULL) return;
-    stack<Node*> s1, s2;
-    s1.push(root);
-
-    while (!s1.empty()) {
-        Node* curr = s1.top(); s1.pop();
-        s2.push(curr);
-        if (curr->left)  s1.push(curr->left);
-        if (curr->right) s1.push(curr->right);
-    }
-
-    // s2 me ulta order hai, seedha print karo
-    while (!s2.empty()) {
-        cout << s2.top()->data;
-        s2.pop();
-    }
-    cout << endl;
-}
-
-// iterative preorder
-void iterativePreorder(Node* root) {
-    if (root == NULL) return;
-    stack<Node*> st;
-    st.push(root);
-
-    while (!st.empty()) {
-        Node* curr = st.top(); st.pop();
-        cout << curr->data;
-        if (curr->right) st.push(curr->right);
-        if (curr->left)  st.push(curr->left);
-    }
-    cout << endl;
 }
 
 int main() {
-    string postfix = "ab+cd-*";
-    cout << "Postfix input: " << postfix << endl;
 
-    Node* root = buildExprTree(postfix);
+    /*
+          +
+         / \
+        *   C
+       / \
+      A   B
+    */
 
-    cout << "Infix  (Iterative Inorder):   "; iterativeInorder(root);
-    cout << "Prefix (Iterative Preorder):  "; iterativePreorder(root);
-    cout << "Postfix(Iterative Postorder): "; iterativePostorder(root);
+    Node* root = createNode('+');
+
+    root->left = createNode('*');
+    root->right = createNode('C');
+
+    root->left->left = createNode('A');
+    root->left->right = createNode('B');
+
+    cout << "Iterative Inorder: ";
+    inorder(root);
 
     return 0;
 }
