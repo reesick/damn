@@ -1,61 +1,48 @@
-/*
-Experiment 34: Job Sequencing with Deadlines
-Topic: Greedy
-Concepts Used:
-- Greedy Algorithm
-- Job Scheduling
-- Profit Maximization
-*/
-
 #include <iostream>
-#include <vector>
-#include <algorithm>
 using namespace std;
 
-struct Job {
-    int id, deadline, profit;
-};
+/*
+Experiment 34: Job Sequencing with Deadlines
+*/
 
 int main() {
-    int n;
-    cout << "Enter number of jobs: ";
-    cin >> n;
 
-    vector<Job> jobs(n);
-    cout << "Enter job id, deadline, profit:" << endl;
-    for (int i = 0; i < n; i++)
-        cin >> jobs[i].id >> jobs[i].deadline >> jobs[i].profit;
+    // already sorted by profit descending
+    int profit[] = {100, 50, 20};
+    int deadline[] = {2, 1, 2};
 
-    // profit ke hisaab se descending sort karo
-    sort(jobs.begin(), jobs.end(), [](Job& a, Job& b) {
-        return a.profit > b.profit;
-    });
-
-    // max deadline nikalo
-    int maxDeadline = 0;
-    for (auto& j : jobs) maxDeadline = max(maxDeadline, j.deadline);
-
-    // slot array: -1 matlab free
-    vector<int> slot(maxDeadline + 1, -1);
+    int slots[2] = {-1, -1};   // -1 means empty
     int totalProfit = 0;
-    int jobsDone = 0;
 
-    cout << "\nSelected Jobs:" << endl;
-    for (auto& job : jobs) {
-        // deadline se pehle khali slot dhundho
-        for (int t = job.deadline; t >= 1; t--) {
-            if (slot[t] == -1) {
-                slot[t] = job.id;
-                totalProfit += job.profit;
-                jobsDone++;
-                cout << "Job " << job.id << " scheduled at slot " << t
-                     << " (profit: " << job.profit << ")" << endl;
+    // each job check karo
+    for (int i = 0; i < 3; i++) {
+
+        // deadline ke last slot se check karo
+        for (int j = deadline[i] - 1; j >= 0; j--) {
+
+            // slot empty hai
+            if (slots[j] == -1) {
+
+                slots[j] = i;
+
+                totalProfit = totalProfit + profit[i];
+
                 break;
             }
         }
     }
 
-    cout << "\nTotal Jobs: " << jobsDone << endl;
-    cout << "Total Profit: " << totalProfit << endl;
+    cout << "Selected Jobs: ";
+
+    for (int i = 0; i < 2; i++) {
+
+        if (slots[i] != -1) {
+            cout << "Job" << slots[i] << " ";
+        }
+    }
+
+    cout << endl;
+    cout << "Maximum Profit = " << totalProfit;
+
     return 0;
 }
