@@ -1,69 +1,94 @@
-/*
-Experiment 31: Merge Sort
-Topic: Sorting
-Concepts Used:
-- Divide and Conquer
-- Merge Sort
-- Recursion
-*/
-
 #include <iostream>
 using namespace std;
 
-// do sorted halves ko merge karo
+/*
+Experiment 31: Merge Sort
+Sort student credit records in ascending order
+*/
+
+
+// do sorted halves ko merge karega
 void merge(int arr[], int left, int mid, int right) {
-    int n1 = mid - left + 1;
-    int n2 = right - mid;
 
-    // temporary arrays
-    int L[100], R[100];
-    for (int i = 0; i < n1; i++) L[i] = arr[left + i];
-    for (int i = 0; i < n2; i++) R[i] = arr[mid + 1 + i];
+    int temp[50];   // temporary array
+    int i = left;   // left half start
+    int j = mid + 1; // right half start
+    int k = left;   // temp index
 
-    int i = 0, j = 0, k = left;
 
-    // dono arrays ko compare karke merge karo
-    while (i < n1 && j < n2) {
-        if (L[i] <= R[j]) arr[k++] = L[i++];
-        else               arr[k++] = R[j++];
+    // dono halves compare karo
+    while (i <= mid && j <= right) {
+
+        // jo chota hai temp me dalo
+        if (arr[i] < arr[j]) {
+            temp[k] = arr[i];
+            i++;
+        }
+        else {
+            temp[k] = arr[j];
+            j++;
+        }
+
+        k++;
     }
 
-    // bacha hua copy karo
-    while (i < n1) arr[k++] = L[i++];
-    while (j < n2) arr[k++] = R[j++];
+
+    // agar left side me elements bache
+    while (i <= mid) {
+        temp[k] = arr[i];
+        i++;
+        k++;
+    }
+
+
+    // agar right side me elements bache
+    while (j <= right) {
+        temp[k] = arr[j];
+        j++;
+        k++;
+    }
+
+
+    // sorted temp ko original array me copy karo
+    for (int i = left; i <= right; i++) {
+        arr[i] = temp[i];
+    }
 }
 
-// recursively split karo aur merge karo
+
+// array ko recursively split karega
 void mergeSort(int arr[], int left, int right) {
-    if (left >= right) return; // base case: 1 element
 
-    int mid = (left + right) / 2;
+    // ek hi element hai toh already sorted
+    if (left < right) {
 
-    // left aur right half ko sort karo
-    mergeSort(arr, left, mid);
-    mergeSort(arr, mid + 1, right);
+        // middle nikalo
+        int mid = (left + right) / 2;
 
-    // sorted halves ko merge karo
-    merge(arr, left, mid, right);
-}
+        // left half sort
+        mergeSort(arr, left, mid);
 
-void printArr(int arr[], int n) {
-    for (int i = 0; i < n; i++) cout << arr[i] << " ";
-    cout << endl;
+        // right half sort
+        mergeSort(arr, mid + 1, right);
+
+        // dono sorted halves merge
+        merge(arr, left, mid, right);
+    }
 }
 
 int main() {
-    int n;
-    cout << "Enter number of elements: ";
-    cin >> n;
 
-    int arr[100];
-    cout << "Enter elements: ";
-    for (int i = 0; i < n; i++) cin >> arr[i];
+    // student credit records
+    int arr[] = {8, 3, 5, 1};
+    int n = 4;
 
-    cout << "Before: "; printArr(arr, n);
     mergeSort(arr, 0, n - 1);
-    cout << "After:  "; printArr(arr, n);
+
+    cout << "Sorted records: ";
+
+    for (int i = 0; i < n; i++) {
+        cout << arr[i] << " ";
+    }
 
     return 0;
 }

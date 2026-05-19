@@ -1,61 +1,78 @@
-/*
-Experiment 32: Quick Sort
-Topic: Sorting
-Concepts Used:
-- Divide and Conquer
-- Partition
-- Quick Sort Recursion
-*/
-
 #include <iostream>
 using namespace std;
 
-// pivot choose karo aur partition karo
-int partition(int arr[], int low, int high) {
-    int pivot = arr[high]; // last element ko pivot banate hai
-    int i = low - 1;       // chote elements ka index
+/*
+Experiment 32: Quick Sort
+Sort student credit records in ascending order
+*/
 
+
+// pivot ko correct jagah pe set karega
+int partition(int arr[], int low, int high) {
+
+    // last element pivot
+    int pivot = arr[high];
+
+    // smaller element ka last index track karega
+    int i = low - 1;
+
+
+    // pivot ke pehle wale elements check karo
     for (int j = low; j < high; j++) {
-        // agar element pivot se chota hai
-        if (arr[j] <= pivot) {
+
+        // agar current pivot se chota hai
+        if (arr[j] < pivot) {
+
             i++;
-            swap(arr[i], arr[j]);
+
+            // swap arr[i] aur arr[j]
+            int temp = arr[i];
+            arr[i] = arr[j];
+            arr[j] = temp;
         }
     }
 
-    // pivot ko sahi jagah pe rakho
-    swap(arr[i + 1], arr[high]);
-    return i + 1; // pivot ka final index
+
+    // pivot ko correct position pe bhejo
+    int temp = arr[i + 1];
+    arr[i + 1] = arr[high];
+    arr[high] = temp;
+
+    // pivot ka final index return
+    return i + 1;
 }
 
+
+// recursive quick sort
 void quickSort(int arr[], int low, int high) {
-    if (low >= high) return; // base case
 
-    // partition karo
-    int pi = partition(arr, low, high);
+    // agar ek se zyada elements hai
+    if (low < high) {
 
-    // left aur right parts ko sort karo
-    quickSort(arr, low, pi - 1);
-    quickSort(arr, pi + 1, high);
-}
+        // pivot ki correct position
+        int p = partition(arr, low, high);
 
-void printArr(int arr[], int n) {
-    for (int i = 0; i < n; i++) cout << arr[i] << " ";
-    cout << endl;
+        // left side sort
+        quickSort(arr, low, p - 1);
+
+        // right side sort
+        quickSort(arr, p + 1, high);
+    }
 }
 
 int main() {
-    int n;
-    cout << "Enter number of elements: ";
-    cin >> n;
 
-    int arr[100];
-    cout << "Enter elements: ";
-    for (int i = 0; i < n; i++) cin >> arr[i];
+    // student credit records
+    int arr[] = {8, 3, 5, 1};
+    int n = 4;
 
-    cout << "Before: "; printArr(arr, n);
     quickSort(arr, 0, n - 1);
-    cout << "After:  "; printArr(arr, n);
+
+    cout << "Sorted records: ";
+
+    for (int i = 0; i < n; i++) {
+        cout << arr[i] << " ";
+    }
 
     return 0;
 }
