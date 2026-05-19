@@ -1,76 +1,53 @@
-/*
-Experiment 24: Dijkstra's Shortest Path Algorithm
-Topic: Graphs
-Concepts Used:
-- Greedy Algorithm
-- Single Source Shortest Path
-- Priority Queue (min-heap)
-- Adjacency List
-*/
-
 #include <iostream>
-#include <vector>
-#include <queue>
-#include <climits>
 using namespace std;
 
-typedef pair<int,int> pii; // {distance, vertex}
+/*
+Experiment 24: Dijkstra Algorithm
+*/
 
-void dijkstra(vector<vector<pii>>& adj, int src, int n) {
-    vector<int> dist(n, INT_MAX);
-    priority_queue<pii, vector<pii>, greater<pii>> pq; // min-heap
+int main() {
 
-    dist[src] = 0;
-    pq.push({0, src});
+    int graph[3][3] = {
+        {0, 2, 6},
+        {2, 0, 3},
+        {6, 3, 0}
+    };
 
-    while (!pq.empty()) {
-        int d = pq.top().first;
-        int u = pq.top().second;
-        pq.pop();
+    int dist[3] = {0, 999, 999};
+    bool visited[3] = {false};
 
-        // agar purana distance hai toh skip karo
-        if (d > dist[u]) continue;
+    for (int count = 0; count < 3; count++) {
 
-        for (auto& edge : adj[u]) {
-            int v = edge.first;
-            int weight = edge.second;
+        int min = 999;
+        int u;
 
-            // agar chota rasta mila
-            if (dist[u] + weight < dist[v]) {
-                dist[v] = dist[u] + weight;
-                pq.push({dist[v], v});
+        // smallest unvisited distance
+        for (int i = 0; i < 3; i++) {
+            if (!visited[i] && dist[i] < min) {
+                min = dist[i];
+                u = i;
+            }
+        }
+
+        visited[u] = true;
+
+        // neighbors update
+        for (int v = 0; v < 3; v++) {
+
+            if (graph[u][v] && !visited[v]) {
+
+                if (dist[u] + graph[u][v] < dist[v]) {
+                    dist[v] = dist[u] + graph[u][v];
+                }
             }
         }
     }
 
-    cout << "Shortest distances from vertex " << src << ":" << endl;
-    for (int i = 0; i < n; i++) {
-        cout << "To " << i << ": ";
-        if (dist[i] == INT_MAX) cout << "INF";
-        else cout << dist[i];
-        cout << endl;
-    }
-}
+    cout << "Shortest distances from source 0:" << endl;
 
-int main() {
-    int n, e;
-    cout << "Enter vertices and edges: ";
-    cin >> n >> e;
-
-    vector<vector<pii>> adj(n);
-    cout << "Enter edges (u v weight):" << endl;
-    for (int i = 0; i < e; i++) {
-        int u, v, w;
-        cin >> u >> v >> w;
-        // directed graph
-        adj[u].push_back({v, w});
-        adj[v].push_back({u, w}); // undirected ke liye dono
+    for (int i = 0; i < 3; i++) {
+        cout << "0 to " << i << " = " << dist[i] << endl;
     }
 
-    int src;
-    cout << "Enter source vertex: ";
-    cin >> src;
-
-    dijkstra(adj, src, n);
     return 0;
 }

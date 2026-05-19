@@ -1,47 +1,56 @@
-/*
-Experiment 19: Maximum and Minimum Comments on Posts
-Topic: Graphs / Arrays
-Concepts Used:
-- Array traversal
-- Comparison logic
-- Max/Min finding
-*/
-
 #include <iostream>
+#include <vector>
 using namespace std;
 
+/*
+Experiment 19: Max and Min Comments in Social Network
+*/
+
+vector<int> graph[10];
+
 int main() {
-    int n;
-    cout << "Enter number of posts: ";
-    cin >> n;
 
-    int comments[100];
-    cout << "Enter comment count for each post:" << endl;
-    for (int i = 0; i < n; i++) {
-        cout << "Post " << i + 1 << ": ";
-        cin >> comments[i];
-    }
+    // social graph
+    graph[0].push_back(1);
+    graph[0].push_back(2);
 
-    // max aur min dhundho
-    int maxComments = comments[0], minComments = comments[0];
-    int maxPost = 0, minPost = 0;
+    graph[1].push_back(0);
+    graph[1].push_back(3);
+
+    graph[2].push_back(0);
+    graph[2].push_back(3);
+
+    graph[3].push_back(1);
+    graph[3].push_back(2);
+
+    // comments data
+    int comments[] = {5, 12, 3, 8};
+    int n = 4;
+
+    int maxComments = comments[0];
+    int minComments = comments[0];
+
+    int maxUser = 0;
+    int minUser = 0;
 
     for (int i = 1; i < n; i++) {
+
         if (comments[i] > maxComments) {
             maxComments = comments[i];
-            maxPost = i;
+            maxUser = i;
         }
+
         if (comments[i] < minComments) {
             minComments = comments[i];
-            minPost = i;
+            minUser = i;
         }
     }
 
-    cout << "\nPost with Maximum Comments: Post " << maxPost + 1
-         << " (" << maxComments << " comments)" << endl;
+    cout << "User with maximum comments: " << maxUser << endl;
+    cout << "Comments: " << maxComments << endl;
 
-    cout << "Post with Minimum Comments: Post " << minPost + 1
-         << " (" << minComments << " comments)" << endl;
+    cout << "User with minimum comments: " << minUser << endl;
+    cout << "Comments: " << minComments;
 
     return 0;
 }

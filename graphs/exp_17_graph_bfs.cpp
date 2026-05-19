@@ -1,34 +1,44 @@
-/*
-Experiment 17: BFS Traversal on Graph
-Topic: Graphs
-Concepts Used:
-- Graph (Adjacency List)
-- Breadth First Search
-- Queue
-*/
-
 #include <iostream>
 #include <vector>
 #include <queue>
 using namespace std;
 
-const int MAXN = 100;
-vector<int> adj[MAXN];
-bool visited[MAXN];
+/*
+Experiment 17: BFS Traversal
+Concepts:
+- Graph
+- BFS
+- Queue
+*/
 
-// queue use karke BFS karo
+vector<int> graph[10];
+bool visited[10];
+
 void bfs(int start) {
+
     queue<int> q;
-    visited[start] = true;
+
+    // start node queue me
     q.push(start);
 
+    // visited mark
+    visited[start] = true;
+
     while (!q.empty()) {
-        int node = q.front(); q.pop();
+
+        // front node nikalo
+        int node = q.front();
+        q.pop();
+
+        // print
         cout << node << " ";
 
-        // sabhi unvisited neighbors ko queue me daalo
-        for (int neighbor : adj[node]) {
+        // neighbors check
+        for (int neighbor : graph[node]) {
+
+            // agar visit nahi hua
             if (!visited[neighbor]) {
+
                 visited[neighbor] = true;
                 q.push(neighbor);
             }
@@ -37,27 +47,21 @@ void bfs(int start) {
 }
 
 int main() {
-    int n, e;
-    cout << "Enter number of vertices and edges: ";
-    cin >> n >> e;
 
-    cout << "Enter edges (u v):" << endl;
-    for (int i = 0; i < e; i++) {
-        int u, v;
-        cin >> u >> v;
-        adj[u].push_back(v);
-        adj[v].push_back(u);
-    }
+    // graph create
+    graph[0].push_back(1);
+    graph[0].push_back(2);
 
-    for (int i = 0; i <= n; i++) visited[i] = false;
+    graph[1].push_back(0);
+    graph[1].push_back(3);
 
-    int start;
-    cout << "Enter start vertex: ";
-    cin >> start;
+    graph[2].push_back(0);
+
+    graph[3].push_back(1);
 
     cout << "BFS Traversal: ";
-    bfs(start);
-    cout << endl;
+
+    bfs(0);
 
     return 0;
 }

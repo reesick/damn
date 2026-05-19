@@ -1,78 +1,54 @@
-/*
-Experiment 23: Kruskal's Algorithm (Minimum Spanning Tree)
-Topic: Graphs
-Concepts Used:
-- Greedy Algorithm
-- MST using Kruskal
-- Disjoint Set Union (DSU / Union-Find)
-- Sorting edges by weight
-*/
-
 #include <iostream>
-#include <vector>
-#include <algorithm>
 using namespace std;
 
-struct Edge {
-    int u, v, weight;
-};
+/*
+Experiment 23: Kruskal's Algorithm
+*/
 
-// DSU - parent find karo
-int parent[100];
-int rankArr[100];
+int findParent(int parent[], int node) {
 
-int find(int x) {
-    // path compression
-    if (parent[x] != x)
-        parent[x] = find(parent[x]);
-    return parent[x];
-}
+    while (parent[node] != -1)
+        node = parent[node];
 
-// do sets ko merge karo
-void unite(int x, int y) {
-    int px = find(x), py = find(y);
-    if (px == py) return;
-    // rank ke hisaab se merge karo
-    if (rankArr[px] < rankArr[py]) swap(px, py);
-    parent[py] = px;
-    if (rankArr[px] == rankArr[py]) rankArr[px]++;
+    return node;
 }
 
 int main() {
-    int n, e;
-    cout << "Enter vertices and edges: ";
-    cin >> n >> e;
 
-    vector<Edge> edges(e);
-    cout << "Enter edges (u v weight):" << endl;
-    for (int i = 0; i < e; i++)
-        cin >> edges[i].u >> edges[i].v >> edges[i].weight;
+    // source, destination, weight
+    int edges[3][3] = {
+        {0, 1, 2},
+        {1, 2, 3},
+        {0, 2, 6}
+    };
 
-    // edges ko weight ke hisaab se sort karo
-    sort(edges.begin(), edges.end(), [](Edge& a, Edge& b) {
-        return a.weight < b.weight;
-    });
+    int parent[3] = {-1, -1, -1};
 
-    // DSU initialize karo
-    for (int i = 0; i < n; i++) { parent[i] = i; rankArr[i] = 0; }
+    int cost = 0;
+    int count = 0;
 
-    cout << "\nKruskal's MST:" << endl;
-    cout << "Edge\t\tWeight" << endl;
+    for (int i = 0; i < 3 && count < 2; i++) {
 
-    int totalWeight = 0, edgesUsed = 0;
+        int u = edges[i][0];
+        int v = edges[i][1];
+        int w = edges[i][2];
 
-    for (Edge& edge : edges) {
-        // agar same component me nahi hain toh add karo
-        if (find(edge.u) != find(edge.v)) {
-            cout << edge.u << " - " << edge.v << "\t\t" << edge.weight << endl;
-            totalWeight += edge.weight;
-            unite(edge.u, edge.v);
-            edgesUsed++;
-            // MST complete: n-1 edges
-            if (edgesUsed == n - 1) break;
+        int pu = findParent(parent, u);
+        int pv = findParent(parent, v);
+
+        // cycle nahi hai
+        if (pu != pv) {
+
+            parent[pu] = pv;
+
+            cout << u << " - " << v << " = " << w << endl;
+
+            cost += w;
+            count++;
         }
     }
 
-    cout << "Total MST Weight: " << totalWeight << endl;
+    cout << "Minimum Cost = " << cost;
+
     return 0;
 }

@@ -1,49 +1,48 @@
-/*
-Experiment 18: Maximum Friends in Social Network (Degree of a Node)
-Topic: Graphs
-Concepts Used:
-- Graph (Adjacency Matrix / Degree)
-- Degree Counting
-- Max Degree Node
-*/
-
 #include <iostream>
 #include <vector>
 using namespace std;
 
+/*
+Experiment 18: Maximum Friends
+Concepts:
+- Graph
+- Adjacency List
+*/
+
+vector<int> graph[10];
+
 int main() {
-    int n, e;
-    cout << "Enter number of people (vertices) and friendships (edges): ";
-    cin >> n >> e;
 
-    // degree array: kitne dost hain har person ke
-    vector<int> degree(n + 1, 0);
+    // social network graph
+    graph[0].push_back(1);
+    graph[0].push_back(2);
 
-    cout << "Enter friendships (u v):" << endl;
-    for (int i = 0; i < e; i++) {
-        int u, v;
-        cin >> u >> v;
-        // dono ka degree badhega
-        degree[u]++;
-        degree[v]++;
-    }
+    graph[1].push_back(0);
+    graph[1].push_back(2);
+    graph[1].push_back(3);
 
-    // sabse zyada dost kiski hain
-    int maxDeg = 0, maxPerson = 1;
-    for (int i = 1; i <= n; i++) {
-        if (degree[i] > maxDeg) {
-            maxDeg = degree[i];
-            maxPerson = i;
+    graph[2].push_back(0);
+    graph[2].push_back(1);
+
+    graph[3].push_back(1);
+
+    int maxFriends = 0;
+    int user = -1;
+
+    // har user check karo
+    for (int i = 0; i < 4; i++) {
+
+        int count = graph[i].size();
+
+        // zyada friends mila
+        if (count > maxFriends) {
+            maxFriends = count;
+            user = i;
         }
     }
 
-    cout << "\nDegree of each person:" << endl;
-    for (int i = 1; i <= n; i++) {
-        cout << "Person " << i << ": " << degree[i] << " friends" << endl;
-    }
-
-    cout << "\nPerson with maximum friends: Person " << maxPerson
-         << " with " << maxDeg << " friends." << endl;
+    cout << "User with maximum friends: " << user << endl;
+    cout << "Total friends: " << maxFriends;
 
     return 0;
 }

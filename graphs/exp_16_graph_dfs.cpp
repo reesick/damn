@@ -1,56 +1,52 @@
-/*
-Experiment 16: DFS Traversal on Graph
-Topic: Graphs
-Concepts Used:
-- Graph (Adjacency List)
-- Depth First Search
-- Recursion + Visited Array
-*/
-
 #include <iostream>
 #include <vector>
 using namespace std;
 
-const int MAXN = 100;
-vector<int> adj[MAXN]; // adjacency list
-bool visited[MAXN];
+/*
+Experiment 16: DFS Traversal
+Concepts:
+- Graph
+- DFS
+- Recursion
+*/
 
-// recursively DFS karo
+vector<int> graph[10];
+bool visited[10];
+
 void dfs(int node) {
+
+    // current node visited
     visited[node] = true;
+
+    // print current node
     cout << node << " ";
 
-    // sabhi neighbors visit karo jo abhi tak nahi gaye
-    for (int neighbor : adj[node]) {
-        if (!visited[neighbor])
+    // saare neighbors check karo
+    for (int neighbor : graph[node]) {
+
+        // agar pehle visit nahi hua
+        if (!visited[neighbor]) {
             dfs(neighbor);
+        }
     }
 }
 
 int main() {
-    int n, e;
-    cout << "Enter number of vertices and edges: ";
-    cin >> n >> e;
 
-    cout << "Enter edges (u v):" << endl;
-    for (int i = 0; i < e; i++) {
-        int u, v;
-        cin >> u >> v;
-        // undirected graph - dono taraf edge daalo
-        adj[u].push_back(v);
-        adj[v].push_back(u);
-    }
+    // graph create
+    graph[0].push_back(1);
+    graph[0].push_back(2);
 
-    // sab unvisited se shuru
-    for (int i = 0; i <= n; i++) visited[i] = false;
+    graph[1].push_back(0);
+    graph[1].push_back(3);
 
-    int start;
-    cout << "Enter start vertex: ";
-    cin >> start;
+    graph[2].push_back(0);
+
+    graph[3].push_back(1);
 
     cout << "DFS Traversal: ";
-    dfs(start);
-    cout << endl;
+
+    dfs(0);
 
     return 0;
 }
